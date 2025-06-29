@@ -1,6 +1,6 @@
 import { Draw } from "@/app/draw/page";
 import { FaRegCircle } from "react-icons/fa";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiRectangle } from "react-icons/bi";
 import { MdModeEditOutline } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa6";
@@ -10,6 +10,7 @@ import { CiText } from "react-icons/ci";
 import { ImTextColor } from "react-icons/im";
 
 export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
+  const [tool, setTool] = useState<"rect" | "circle" | "pencil" | "arrow" | "text" | "eraser" | null>("rect");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (canvasRef.current) {
@@ -20,33 +21,63 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
       };
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
-      Draw(canvasRef.current, roomId, socket);
+      Draw(canvasRef.current, roomId, socket, tool);
 
       return () => {
         window.removeEventListener("resize", resizeCanvas);
       };
     }
-  }, [canvasRef]);
+  }, [canvasRef, tool]);
 
   return (
     <div className="relative h-screen w-screen">
       <div className=" absolute top-3 left-0 w-full flex justify-center text-white space-x-5 ">
-        <div className="">
+        <div
+          className=""
+          onClick={() => {
+            setTool("rect");
+          }}
+        >
           <BiRectangle size={45} />
         </div>
-        <div className="pt-1">
+        <div
+          className="pt-1"
+          onClick={() => {
+            setTool("circle");
+          }}
+        >
           <FaRegCircle size={35} />
         </div>
-        <div className="pt-0.5">
+        <div
+          className="pt-0.5"
+          onClick={() => {
+            setTool("pencil");
+          }}
+        >
           <MdModeEditOutline size={40} />
         </div>
-        <div className="pt-0.5">
+        <div
+          className="pt-0.5"
+          onClick={() => {
+            setTool("arrow");
+          }}
+        >
           <FaArrowRight size={40} />
         </div>
-        <div className="pt-0.5">
+        <div
+          className="pt-0.5"
+          onClick={() => {
+            setTool("text");
+          }}
+        >
           <ImTextColor size={40} />
         </div>
-        <div className="pt-0.5">
+        <div
+          className="pt-0.5"
+          onClick={() => {
+            setTool("eraser");
+          }}
+        >
           <RiEraserLine size={40} />
         </div>
       </div>
