@@ -12,22 +12,46 @@ import { ImTextColor } from "react-icons/im";
 export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
   const [tool, setTool] = useState<"rect" | "circle" | "pencil" | "arrow" | "text" | "eraser" | null>("rect");
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const resizeCanvas = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      };
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-      Draw(canvasRef.current, roomId, socket, tool);
 
-      return () => {
-        window.removeEventListener("resize", resizeCanvas);
-      };
-    }
-  }, [canvasRef, tool]);
+  const [textInput, setTextInput] = useState<{ x: number; y: number; value: string; visible: boolean }>({
+    x: 0,
+    y: 0,
+    value: "",
+    visible: false,
+  });
+
+  useEffect(() => {
+    let isStale = false;
+    let cleanupFn: (() => void) | undefined;
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const setup = async () => {
+      const fn = await Draw(canvas, roomId, socket, tool, setTextInput);
+
+      if (!isStale) {
+        cleanupFn = fn;
+      } else {
+        // @ts-ignore
+        fn();
+      }
+    };
+    setup();
+
+    return () => {
+      isStale = true;
+      window.removeEventListener("resize", resizeCanvas);
+      if (cleanupFn) cleanupFn();
+    };
+  }, [tool]);
 
   return (
     <div className="relative h-screen w-screen">

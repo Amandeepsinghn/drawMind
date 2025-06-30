@@ -15,18 +15,25 @@ type Shape =
       radius: number;
     }
   | {
-      type: "line";
+      type: "arrow";
       x: number;
       y: number;
       lastX: number;
       lastY: number;
+    }
+  | {
+      type: "text";
+      word: string | null;
+      x: number;
+      y: number;
     };
 
 export async function Draw(
   canvas: HTMLCanvasElement,
   roomId: string,
   socket: WebSocket,
-  tool: "rect" | "circle" | "pencil" | "arrow" | "text" | "eraser" | null
+  tool: "rect" | "circle" | "pencil" | "arrow" | "text" | "eraser" | null,
+  setTextInput: React.Dispatch<React.SetStateAction<{ x: number; y: number; value: string; visible: boolean }>>
 ) {
   const ctx = canvas.getContext("2d");
 
@@ -52,12 +59,25 @@ export async function Draw(
   let startX = 0;
   let startY = 0;
 
-  canvas.addEventListener("mousedown", (e) => {
+  const onMouseDown = (e: MouseEvent) => {
     clicked = true;
     startX = e.offsetX;
     startY = e.offsetY;
-  });
-  canvas.addEventListener("mouseup", (e) => {
+
+    if (tool === "text") {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      setTextInput({
+        x,
+        y,
+        value: "",
+        visible: true,
+      });
+    }
+  };
+  const onMouseUp = (e: MouseEvent) => {
     clicked = false;
 
     const currentX = e.offsetX;
@@ -86,6 +106,14 @@ export async function Draw(
         centerY: startY,
         radius: rad,
       };
+    } else if (tool == "arrow") {
+      shape = {
+        type: "arrow",
+        x: startX,
+        y: startY,
+        lastX: currentX,
+        lastY: currentY,
+      };
     }
     if (shape) {
       existingShape.push(shape);
@@ -100,8 +128,8 @@ export async function Draw(
         roomId,
       })
     );
-  });
-  canvas.addEventListener("mousemove", (e) => {
+  };
+  const onMouseMove = (e: MouseEvent) => {
     if (clicked) {
       // rectangle
       const currentX = e.offsetX;
@@ -119,9 +147,25 @@ export async function Draw(
         ctx.beginPath();
         ctx.arc(startX, startY, radius, 0, Math.PI * 2);
         ctx.stroke();
+      } else if (tool === "arrow") {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(currentX, currentY);
+        ctx.stroke();
       }
     }
-  });
+  };
+
+  canvas.addEventListener("mousedown", onMouseDown);
+  canvas.addEventListener("mouseup", onMouseUp);
+  canvas.addEventListener("mousemove", onMouseMove);
+
+  //  clean up function
+  return () => {
+    canvas.removeEventListener("mousedown", onMouseDown);
+    canvas.removeEventListener("mouseup", onMouseUp);
+    canvas.removeEventListener("mousemove", onMouseMove);
+  };
 }
 
 function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
@@ -133,9 +177,11 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
     ctx.strokeStyle = "rgba(255,255,255)";
     if (shape.type === "rect") {
       ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
-    } else if (shape.type === "line") {
+    } else if (shape.type === "arrow") {
+      ctx.beginPath();
       ctx.moveTo(shape.x, shape.y);
       ctx.lineTo(shape.lastX, shape.lastY);
+      ctx.stroke();
     } else if (shape.type === "circle") {
       ctx.beginPath();
       ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
