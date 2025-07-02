@@ -9,6 +9,13 @@ import { RiEraserLine } from "react-icons/ri";
 import { CiText } from "react-icons/ci";
 import { ImTextColor } from "react-icons/im";
 
+type Shape = {
+  type: "text";
+  word: string;
+  x: number;
+  y: number;
+};
+
 export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
   const [tool, setTool] = useState<"rect" | "circle" | "pencil" | "arrow" | "text" | "eraser" | null>("rect");
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,14 +82,6 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
         <div
           className="pt-0.5"
           onClick={() => {
-            setTool("pencil");
-          }}
-        >
-          <MdModeEditOutline size={40} />
-        </div>
-        <div
-          className="pt-0.5"
-          onClick={() => {
             setTool("arrow");
           }}
         >
@@ -106,6 +105,59 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
         </div>
       </div>
       <canvas ref={canvasRef} className="h-screen w-screen block" />
+      {textInput.visible && (
+        <input
+          type="text"
+          autoFocus
+          style={{
+            position: "absolute",
+            left: textInput.x,
+            top: textInput.y,
+            zIndex: 10,
+            fontSize: "16px",
+            padding: "2px",
+            backgroundColor: "black",
+            color: "white",
+          }}
+          value={textInput.value}
+          onChange={(e) => setTextInput({ ...textInput, value: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && canvasRef.current) {
+              if (!textInput.value.trim()) {
+                setTextInput({ x: 0, y: 0, value: "", visible: false });
+                return;
+              }
+              const ctx = canvasRef.current.getContext("2d");
+              if (ctx) {
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "white";
+                ctx.fillText(textInput.value, textInput.x, textInput.y);
+
+                let shape: Shape = {
+                  type: "text",
+                  word: textInput.value,
+                  x: textInput.x,
+                  y: textInput.y,
+                };
+
+                socket.send(
+                  JSON.stringify({
+                    type: "chat",
+                    message: JSON.stringify({
+                      shape,
+                    }),
+                    roomId,
+                  })
+                );
+              }
+              setTextInput({ x: 0, y: 0, value: "", visible: false });
+            }
+          }}
+          onBlur={() => {
+            setTextInput({ ...textInput, visible: false });
+          }}
+        ></input>
+      )}
     </div>
   );
 }

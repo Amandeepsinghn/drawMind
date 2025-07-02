@@ -23,12 +23,17 @@ type Shape =
     }
   | {
       type: "text";
-      word: string | null;
+      word: string;
       x: number;
       y: number;
     }
   | {
       type: "eraser";
+      x: number;
+      y: number;
+    }
+  | {
+      type: "pencil";
       x: number;
       y: number;
     };
@@ -173,6 +178,17 @@ export async function Draw(
     }
   };
 
+  const handleClick = (e: MouseEvent) => {
+    if (tool === "text") {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      setTextInput({ x, y, value: "", visible: true });
+    }
+  };
+
+  canvas.addEventListener("click", handleClick);
   canvas.addEventListener("mousedown", onMouseDown);
   canvas.addEventListener("mouseup", onMouseUp);
   canvas.addEventListener("mousemove", onMouseMove);
@@ -182,6 +198,7 @@ export async function Draw(
     canvas.removeEventListener("mousedown", onMouseDown);
     canvas.removeEventListener("mouseup", onMouseUp);
     canvas.removeEventListener("mousemove", onMouseMove);
+    canvas.removeEventListener("click", handleClick);
   };
 }
 
@@ -190,17 +207,20 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
   ctx.fillStyle = "rgba(0,0,0)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  existingShape.map((shape) => {
+  for (const shape of existingShape) {
+    if (!shape || shape.type === null) continue;
+
     ctx.strokeStyle = "rgba(255,255,255)";
+
     if (shape.type === "rect") {
       ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
     } else if (shape.type === "arrow") {
-      var headlen = 10;
+      const headlen = 10;
       ctx.beginPath();
       ctx.moveTo(shape.x, shape.y);
-      var dx = shape.lastX - shape.x;
-      var dy = shape.lastY - shape.y;
-      var angle = Math.atan2(dy, dx);
+      const dx = shape.lastX - shape.x;
+      const dy = shape.lastY - shape.y;
+      const angle = Math.atan2(dy, dx);
       ctx.lineTo(shape.lastX, shape.lastY);
       ctx.lineTo(shape.lastX - headlen * Math.cos(angle - Math.PI / 6), shape.lastY - headlen * Math.sin(angle - Math.PI / 6));
       ctx.moveTo(shape.lastX, shape.lastY);
@@ -211,8 +231,12 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
       ctx.beginPath();
       ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
       ctx.stroke();
+    } else if (shape.type === "text") {
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "white";
+      ctx.fillText(shape.word, shape.x, shape.y);
     }
-  });
+  }
 }
 
 async function getExistingShape(roomId: string) {
