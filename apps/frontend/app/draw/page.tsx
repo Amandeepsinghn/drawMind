@@ -26,6 +26,11 @@ type Shape =
       word: string | null;
       x: number;
       y: number;
+    }
+  | {
+      type: "eraser";
+      x: number;
+      y: number;
     };
 
 export async function Draw(
@@ -148,10 +153,22 @@ export async function Draw(
         ctx.arc(startX, startY, radius, 0, Math.PI * 2);
         ctx.stroke();
       } else if (tool === "arrow") {
+        var headlen = 10;
+        var angle = Math.atan2(currentY - startY, currentX - startX);
+
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(currentX, currentY);
         ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(currentX, currentY);
+        ctx.lineTo(currentX - headlen * Math.cos(angle - Math.PI / 6), currentY - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(currentX - headlen * Math.cos(angle + Math.PI / 6), currentY - headlen * Math.sin(angle + Math.PI / 6));
+        ctx.lineTo(currentX, currentY);
+        ctx.lineTo(currentX - headlen * Math.cos(angle - Math.PI / 6), currentY - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.stroke();
+        ctx.fill();
       }
     }
   };
@@ -178,10 +195,18 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
     if (shape.type === "rect") {
       ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
     } else if (shape.type === "arrow") {
+      var headlen = 10;
       ctx.beginPath();
       ctx.moveTo(shape.x, shape.y);
+      var dx = shape.lastX - shape.x;
+      var dy = shape.lastY - shape.y;
+      var angle = Math.atan2(dy, dx);
       ctx.lineTo(shape.lastX, shape.lastY);
+      ctx.lineTo(shape.lastX - headlen * Math.cos(angle - Math.PI / 6), shape.lastY - headlen * Math.sin(angle - Math.PI / 6));
+      ctx.moveTo(shape.lastX, shape.lastY);
+      ctx.lineTo(shape.lastX - headlen * Math.cos(angle + Math.PI / 6), shape.lastY - headlen * Math.sin(angle + Math.PI / 6));
       ctx.stroke();
+      ctx.fill();
     } else if (shape.type === "circle") {
       ctx.beginPath();
       ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
