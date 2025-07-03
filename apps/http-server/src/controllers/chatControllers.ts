@@ -19,3 +19,18 @@ export const chats = async (req: Request<{ roomId: string }>, res: Response) => 
     messages,
   });
 };
+
+export const chatDelete = async (req: Request<{ roomId: string }>, res: Response) => {
+  const roomId = parseInt(req.body.roomId);
+
+  const messages = await prismaClient.chat.deleteMany({
+    where: {
+      // @ts-ignore
+      roomId: roomId,
+    },
+  });
+
+  res.status(200).json({
+    body: "deleted all data",
+  });
+};

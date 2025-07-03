@@ -47,19 +47,41 @@ export async function Draw(
 ) {
   const ctx = canvas.getContext("2d");
 
-  const existingShape: Shape[] = await getExistingShape(roomId);
+  let existingShape: Shape[] = await getExistingShape(roomId);
 
   if (!ctx) {
     return;
   }
+
+  // if (tool === "eraser") {
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:3004/api/deleteChat/",
+  //       {
+  //         roomId: roomId,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: localStorage.getItem("token"),
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     alert(error);
+  //   }
+  // }
 
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
 
     if (message.type === "chat") {
       const parsedShape = JSON.parse(message.message);
-      existingShape.push(parsedShape.shape);
-      clearCanvas(existingShape, canvas, ctx);
+      if (parsedShape.shape?.type === "eraser") {
+        existingShape = [];
+      } else {
+        existingShape.push(parsedShape.shape);
+        clearCanvas(existingShape, canvas, ctx);
+      }
     }
   };
 
@@ -186,6 +208,34 @@ export async function Draw(
 
       setTextInput({ x, y, value: "", visible: true });
     }
+    if (tool === "eraser") {
+      socket.send(
+        JSON.stringify({
+          type: "chat",
+          message: JSON.stringify({
+            shape: { type: "eraser", x: 0, y: 0 },
+          }),
+          roomId,
+        })
+      );
+
+      existingShape = [];
+      clearCanvas(existingShape, canvas, ctx);
+
+      try {
+        axios.post(
+          "http://localhost:3004/api/deleteChat/",
+          { roomId },
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
+        );
+      } catch (error) {
+        alert("Error clearing chat: " + error);
+      }
+    }
   };
 
   canvas.addEventListener("click", handleClick);
@@ -235,7 +285,10 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
       ctx.font = "16px Arial";
       ctx.fillStyle = "white";
       ctx.fillText(shape.word, shape.x, shape.y);
-    }
+    } //else if (shape.type === "eraser") {
+    // existingShape = [];
+    // clearCanvas(existingShape, canvas, ctx);
+    // }
   }
 }
 
