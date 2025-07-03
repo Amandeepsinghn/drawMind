@@ -1,10 +1,7 @@
 import axios from "axios";
-import { Head } from "next/document";
-import { headers } from "next/headers";
 import { useRef } from "react";
-import { useRouter } from "next/navigation";
 interface room {
-  roomId: Number;
+  roomId: number;
 }
 
 interface card {
@@ -13,7 +10,6 @@ interface card {
 
 export const Card = ({ setCard }: card) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
   return (
     <div className=" bg-[#2d333b] h-screen flex justify-center">
       <div className="flex flex-col justify-center ">
@@ -32,7 +28,7 @@ export const Card = ({ setCard }: card) => {
                 }
 
                 try {
-                  const response = await axios.post<room>(
+                  await axios.post<room>(
                     "http://localhost:3004/api/room",
                     {
                       name: roomName,
@@ -44,7 +40,7 @@ export const Card = ({ setCard }: card) => {
                     }
                   );
                   setCard(false);
-                } catch (error) {
+                } catch {
                   console.log("something went wrong");
                 }
               }}

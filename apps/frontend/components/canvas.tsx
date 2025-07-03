@@ -1,12 +1,9 @@
-import { Draw } from "@/app/draw/page";
+import { Draw } from "./draw";
 import { FaRegCircle } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { BiRectangle } from "react-icons/bi";
-import { MdModeEditOutline } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa6";
-import { MdOutlineFormatColorText } from "react-icons/md";
 import { RiEraserLine } from "react-icons/ri";
-import { CiText } from "react-icons/ci";
 import { ImTextColor } from "react-icons/im";
 
 type Shape = {
@@ -47,8 +44,9 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
       if (!isStale) {
         cleanupFn = fn;
       } else {
-        // @ts-ignore
-        fn();
+        if (fn) {
+          fn();
+        }
       }
     };
     setup();
@@ -58,11 +56,11 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
       window.removeEventListener("resize", resizeCanvas);
       if (cleanupFn) cleanupFn();
     };
-  }, [tool]);
+  }, [tool, roomId, socket]);
 
   return (
     <div className="relative h-screen w-screen">
-      <div className=" absolute top-3 left-0 w-full flex justify-center text-white space-x-5 ">
+      <div className=" absolute top-3 left-0 w-full flex justify-center text-white space-x-5">
         <div
           className=""
           onClick={() => {
@@ -133,7 +131,7 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
                 ctx.fillStyle = "white";
                 ctx.fillText(textInput.value, textInput.x, textInput.y);
 
-                let shape: Shape = {
+                const shape: Shape = {
                   type: "text",
                   word: textInput.value,
                   x: textInput.x,

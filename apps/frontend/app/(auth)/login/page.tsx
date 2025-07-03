@@ -5,10 +5,10 @@ import { Button } from "../../../components/button";
 import { AiFillGitlab } from "react-icons/ai";
 import { InputBox } from "../../../components/InputBox";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
-export default function logIn() {
+export default function LogIn() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,8 +51,9 @@ export default function logIn() {
                     });
                     localStorage.setItem("token", response.data.token);
                     router.push("/dashboard");
-                  } catch (error: any) {
-                    if (error.response.status == 403) {
+                  } catch (error: unknown) {
+                    const err = error as AxiosError;
+                    if (err.response && err.response.status == 403) {
                       setErrorMessage("user does not exsist");
                     } else {
                       setErrorMessage("Something went wrong. Please try again.");

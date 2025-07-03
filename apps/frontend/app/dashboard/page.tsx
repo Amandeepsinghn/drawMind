@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "../../components/button";
 import { AiFillGitlab } from "react-icons/ai";
-import { InputBox } from "../../components/InputBox";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ProfileButton } from "../../components/profile";
-import { headers } from "next/headers";
+
 import { CreateRoom } from "../../components/CreateRoom";
 import { Card } from "../../components/RoomCard";
 
@@ -20,14 +18,14 @@ interface User {
 
 interface Room {
   room: {
-    id: Number;
-    slug: String;
+    id: number;
+    slug: string;
     createdAt: Date;
-    adminId: String;
+    adminId: string;
   };
 }
 
-export default function logIn() {
+export default function LogIn() {
   const [user, setUsers] = useState<User[]>([]);
   const [filter, setFilter] = useState("");
   const router = useRouter();
@@ -116,8 +114,8 @@ export default function logIn() {
                             },
                           });
                           router.push(`/room/${response.data.room.id}`);
-                        } catch (error) {
-                          <div className="text-red-500"> failed to enter the room</div>;
+                        } catch {
+                          <div className="text-red-500"> failed to enter the room,error</div>;
                         }
                       }}
                     >

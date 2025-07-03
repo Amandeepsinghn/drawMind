@@ -3,11 +3,12 @@ import MainRoom from "../../../components/RoomCanvas";
 export default async function CanvasPage({
   params,
 }: {
-  params: {
+  params: Promise<{
     roomId: string;
-  };
+  }>;
 }) {
-  const roomId = (await params).roomId;
-  console.log(roomId);
+  // Await the params to get the actual roomId
+  const { roomId } = await params;
+
   return <MainRoom roomId={roomId} />;
 }

@@ -5,10 +5,10 @@ import { Button } from "../../../components/button";
 import { AiFillGitlab } from "react-icons/ai";
 import { InputBox } from "../../../components/InputBox";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
-export default function signup() {
+export default function SignUp() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
@@ -47,15 +47,15 @@ export default function signup() {
                 className={`text-black text-xl font-semibold rounded-2xl px-40 py-3 bg-[#dbe8f2] `}
                 onClick={async () => {
                   try {
-                    const response = await axios.post("http://localhost:3004/api/signup", {
+                    await axios.post("http://localhost:3004/api/signup", {
                       username: email,
                       password: password,
                       name: firstName,
                     });
-                    // @ts-ignore
                     router.push("/login");
-                  } catch (error: any) {
-                    if (error.response && error.response.status === 411) {
+                  } catch (error: unknown) {
+                    const err = error as AxiosError;
+                    if (err.response && err.response.status === 411) {
                       setErrorMessage("User already exists");
                     } else {
                       setErrorMessage("Something went wrong. Please try again");

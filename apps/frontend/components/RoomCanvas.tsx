@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { Draw } from "@/app/draw/page";
+import React, { useEffect, useState } from "react";
 import { InitCanvas } from "../components/canvas";
 
 export default function MainRoom({ roomId }: { roomId: string }) {

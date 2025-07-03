@@ -53,24 +53,6 @@ export async function Draw(
     return;
   }
 
-  // if (tool === "eraser") {
-  //   try {
-  //     const res = await axios.post(
-  //       "http://localhost:3004/api/deleteChat/",
-  //       {
-  //         roomId: roomId,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: localStorage.getItem("token"),
-  //         },
-  //       }
-  //     );
-  //   } catch (error) {
-  //     alert(error);
-  //   }
-  // }
-
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
 
@@ -180,8 +162,8 @@ export async function Draw(
         ctx.arc(startX, startY, radius, 0, Math.PI * 2);
         ctx.stroke();
       } else if (tool === "arrow") {
-        var headlen = 10;
-        var angle = Math.atan2(currentY - startY, currentX - startX);
+        const headlen = 10;
+        const angle = Math.atan2(currentY - startY, currentX - startX);
 
         ctx.beginPath();
         ctx.moveTo(startX, startY);
@@ -228,7 +210,7 @@ export async function Draw(
           { roomId },
           {
             headers: {
-              Authorization: localStorage.getItem("token"),
+              Authorization: localStorage.getItem("token") || "",
             },
           }
         );
@@ -285,10 +267,7 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
       ctx.font = "16px Arial";
       ctx.fillStyle = "white";
       ctx.fillText(shape.word, shape.x, shape.y);
-    } //else if (shape.type === "eraser") {
-    // existingShape = [];
-    // clearCanvas(existingShape, canvas, ctx);
-    // }
+    }
   }
 }
 
