@@ -6,7 +6,6 @@ export const chats = async (req: Request<{ roomId: string }>, res: Response) => 
 
   const messages = await prismaClient.chat.findMany({
     where: {
-      // @ts-ignore
       roomId: roomId,
     },
     orderBy: {
@@ -25,7 +24,6 @@ export const chatDelete = async (req: Request<{ roomId: string }>, res: Response
 
   const messages = await prismaClient.chat.deleteMany({
     where: {
-      // @ts-ignore
       roomId: roomId,
     },
   });
