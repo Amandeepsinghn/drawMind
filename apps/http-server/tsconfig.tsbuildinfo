@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/middleware.ts","./src/controllers/chatControllers.ts","./src/controllers/longinController.ts","./src/controllers/roomController.ts","./src/routes/chat.ts","./src/routes/room.ts","./src/routes/user.ts"],"version":"5.8.2"}
+{"root":["./api/index.ts","./api/middleware.ts","./api/controllers/chatControllers.ts","./api/controllers/longinController.ts","./api/controllers/roomController.ts","./api/routes/chat.ts","./api/routes/room.ts","./api/routes/user.ts"],"version":"5.8.2"}
