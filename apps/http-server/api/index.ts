@@ -2,8 +2,8 @@ import cors from "cors";
 import { userRouter } from "./routes/user";
 import { roomRouter } from "./routes/room";
 import { chatRouter } from "./routes/chat";
-import express, { Express } from "express";
-const app: Express = express();
+import express from "express";
+const app = express();
 
 declare global {
   namespace Express {

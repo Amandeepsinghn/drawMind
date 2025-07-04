@@ -1,11 +1,21 @@
-import express from "express";
 import { Request, Response } from "express";
 import { prismaClient } from "@repo/db/client";
 import { createUserSchema, signinSchema } from "@repo/common/client";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/client";
 
-export const signUp = async (req: Request, res: Response) => {
+type CreateUserBody = {
+  username: string;
+  password: string;
+  name: string;
+};
+
+type SignInBody = {
+  username: string;
+  password: string;
+};
+
+export const signUp = async (req: Request<{}, {}, CreateUserBody>, res: Response) => {
   const parsedData = createUserSchema.safeParse(req.body);
 
   if (!parsedData.success) {
@@ -18,7 +28,7 @@ export const signUp = async (req: Request, res: Response) => {
   try {
     const user = await prismaClient.user.create({
       data: {
-        email: parsedData.data?.username,
+        email: parsedData.data.username,
         password: parsedData.data.password,
         name: parsedData.data.name,
       },
@@ -33,7 +43,7 @@ export const signUp = async (req: Request, res: Response) => {
   }
 };
 
-export const signIn = async (req: Request, res: Response) => {
+export const signIn = async (req: Request<{}, {}, SignInBody>, res: Response) => {
   const parsedData = signinSchema.safeParse(req.body);
 
   if (!parsedData.success) {

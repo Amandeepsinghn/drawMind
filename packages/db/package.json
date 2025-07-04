@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "prisma": "^6.10.1"
   },
   "exports": {
     "./client": "./src/index.ts"
@@ -16,7 +17,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "6.10.1",
-    "prisma": "^6.10.1"
+    "@prisma/client": "6.10.1"
   }
 }

@@ -7,7 +7,23 @@ type Data = {
   adminId: string;
 };
 
-export const room = async (req: Request, res: Response) => {
+// body type for room creation
+type CreateRoomBody = {
+  name: string;
+};
+
+// request with userId injected
+type AuthenticatedRequest<TBody = any, TParams = {}, TQuery = {}> = Request<TParams, {}, TBody, TQuery> & {
+  userId: string;
+};
+
+// GET /room/:slug
+type RoomSlugParams = { slug: string };
+
+// GET /bulk?filter=abc
+type BulkQuery = { filter?: string };
+
+export const room = async (req: AuthenticatedRequest<CreateRoomBody>, res: Response) => {
   try {
     const parsedData = createRoomSchema.safeParse(req.body);
     if (!parsedData.success) {
@@ -37,7 +53,7 @@ export const room = async (req: Request, res: Response) => {
   }
 };
 
-export const roomSlug = async (req: Request, res: Response) => {
+export const roomSlug = async (req: Request<RoomSlugParams>, res: Response) => {
   const slug = req.params.slug;
   const room = await prismaClient.room.findFirst({
     where: {
@@ -67,7 +83,7 @@ export const getData = async (req: Request, res: Response) => {
   );
 };
 
-export const bulk = async (req: Request, res: Response) => {
+export const bulk = async (req: Request<{}, {}, {}, BulkQuery>, res: Response) => {
   try {
     console.log("We are inside dataquery");
     const roomName = req.query.filter?.toString() || "";

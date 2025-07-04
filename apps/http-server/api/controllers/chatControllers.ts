@@ -19,7 +19,7 @@ export const chats = async (req: Request<{ roomId: string }>, res: Response) => 
   });
 };
 
-export const chatDelete = async (req: Request<{ roomId: string }>, res: Response) => {
+export const chatDelete = async (req: Request<{}, {}, { roomId: string }>, res: Response) => {
   const roomId = parseInt(req.body.roomId);
 
   const messages = await prismaClient.chat.deleteMany({
