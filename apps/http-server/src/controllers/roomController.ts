@@ -59,7 +59,7 @@ export const getData = async (req: Request, res: Response) => {
   });
 
   res.status(200).json(
-    data.map((user) => ({
+    data.map((user: { id: number; slug: string; createdAt: Date }) => ({
       roomName: user.slug,
       roomId: user.id,
       createdAt: user.createdAt,
@@ -90,7 +90,7 @@ export const bulk = async (req: Request, res: Response) => {
         createdAt: user.createdAt,
       }))
     );
-  } catch (error) {
+  } catch {
     res.status(500).json({
       message: "something went wrong",
     });
