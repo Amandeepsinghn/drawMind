@@ -16,6 +16,12 @@ declare global {
 app.use(cors());
 app.use(express.json());
 
+app.use("/", (req, res) => {
+  res.json({
+    message: "testing",
+  });
+});
+
 app.use("/api", chatRouter);
 app.use("/api", roomRouter);
 app.use("/api", userRouter);
