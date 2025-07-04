@@ -7,8 +7,7 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
 
   const decoded = jwt.verify(token, JWT_SECRET);
 
-  if (decoded) {
-    // @ts-ignore: TODO: Fix this
+  if (typeof decoded === "object" && "userId" in decoded) {
     req.userId = decoded.userId;
     next();
   } else {

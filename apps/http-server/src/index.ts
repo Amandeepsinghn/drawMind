@@ -5,6 +5,14 @@ import { roomRouter } from "./routes/room";
 import { chatRouter } from "./routes/chat";
 const app = express();
 
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+    }
+  }
+}
+
 app.use(cors());
 app.use(express.json());
 

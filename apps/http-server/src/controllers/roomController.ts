@@ -10,7 +10,6 @@ export const room = async (req: Request, res: Response) => {
       });
       return;
     }
-
     // @ts-ignore
     const userId = req.userId;
 
@@ -24,7 +23,7 @@ export const room = async (req: Request, res: Response) => {
     res.status(200).json({
       roomId: room.id,
     });
-  } catch (e) {
+  } catch {
     res.status(411).json({
       body: "Room cannot be created",
     });
