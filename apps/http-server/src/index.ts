@@ -26,4 +26,6 @@ app.use("/api", chatRouter);
 app.use("/api", roomRouter);
 app.use("/api", userRouter);
 
+app.listen(3004);
+
 module.exports = app;
