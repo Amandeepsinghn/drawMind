@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import { createRoomSchema } from "@repo/common/client";
 import { prismaClient } from "@repo/db/client";
+
+type Data = {
+  slug: string;
+  adminId: string;
+};
+
 export const room = async (req: Request, res: Response) => {
   try {
     const parsedData = createRoomSchema.safeParse(req.body);
@@ -10,14 +16,15 @@ export const room = async (req: Request, res: Response) => {
       });
       return;
     }
-    // @ts-ignore
     const userId = req.userId;
 
+    const latestData: Data = {
+      slug: parsedData.data.name,
+      adminId: userId,
+    };
+
     const room = await prismaClient.room.create({
-      data: {
-        slug: parsedData.data.name,
-        adminId: userId,
-      },
+      data: latestData,
     });
 
     res.status(200).json({
