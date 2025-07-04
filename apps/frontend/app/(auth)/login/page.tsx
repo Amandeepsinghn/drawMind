@@ -38,8 +38,8 @@ export default function LogIn() {
       <div className="p-10">
         <div className="flex justify-between">
           <div className="flex flex-col justify-center">
-            <InputBox label="Password" placeholder="enter your password" onChange={(e) => setPassword(e.target.value)} />
             <InputBox label="Email" placeholder="enter email" onChange={(e) => setEmail(e.target.value)} />
+            <InputBox label="Password" placeholder="enter your password" onChange={(e) => setPassword(e.target.value)} />
             <div className="flex justify-center mt-6">
               <button
                 className={`text-black text-xl font-semibold rounded-2xl px-40 py-3 bg-[#dbe8f2] `}
