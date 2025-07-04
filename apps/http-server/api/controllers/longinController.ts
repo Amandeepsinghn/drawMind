@@ -7,7 +7,6 @@ import { JWT_SECRET } from "@repo/backend-common/client";
 type CreateUserBody = {
   username: string;
   password: string;
-  name: string;
 };
 
 type SignInBody = {
