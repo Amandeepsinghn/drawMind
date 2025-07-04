@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "testing",
+    message: "this is it my friend",
   });
 });
 
