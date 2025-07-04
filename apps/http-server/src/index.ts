@@ -26,6 +26,6 @@ app.use("/api", chatRouter);
 app.use("/api", roomRouter);
 app.use("/api", userRouter);
 
-app.listen(3004);
+app.listen(3000, () => console.log("Server ready on port 3000."));
 
 module.exports = app;
