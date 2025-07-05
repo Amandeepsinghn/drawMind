@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "api/index.ts",
   "scripts": {
-    "build": "tsc -b",
+    "build": "cd ../../packages/db && pnpx prisma generate && cd ../../apps/http-server tsc -b",
     "dev": "vercel dev",
     "start": "node api/index.js"
   },
