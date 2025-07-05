@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://webdraw_owner:npg_F69qVTPcbAgs@ep-silent-lake-a8p9k9d9-pooler.eastus2.azure.neon.tech/webdraw?sslmode=require"
 }
 
 
