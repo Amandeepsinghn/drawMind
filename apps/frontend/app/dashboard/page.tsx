@@ -109,7 +109,7 @@ export default function LogIn() {
                       onClick={async () => {
                         try {
                           const response = await axios.get<Room>(
-                            `draw-mind-http-server-6wjl.vercel.app/api/room/${user.roomName}`,
+                            `https://draw-mind-http-server-6wjl.vercel.app/api/room/${user.roomName}`,
                             {
                               headers: {
                                 Authorization: localStorage.getItem("token"),
