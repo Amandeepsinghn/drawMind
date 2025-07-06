@@ -29,7 +29,7 @@ export const Card = ({ setCard }: card) => {
 
                 try {
                   await axios.post<room>(
-                    "http://localhost:3004/api/room",
+                    "https://draw-mind-http-server-6wjl.vercel.app/api/room",
                     {
                       name: roomName,
                     },
