@@ -7,12 +7,14 @@ import { InputBox } from "../../../components/InputBox";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function SignUp() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
   return (
@@ -44,8 +46,10 @@ export default function SignUp() {
             <InputBox label="Email" placeholder="enter email" onChange={(e) => setEmail(e.target.value)} />
             <div className="flex justify-center mt-6">
               <button
+                disabled={loading}
                 className={`text-black text-xl font-semibold rounded-2xl px-40 py-3 bg-[#dbe8f2] `}
                 onClick={async () => {
+                  setLoading(true);
                   try {
                     await axios.post("https://draw-mind-http-server-6wjl.vercel.app/api/signup", {
                       username: email,
@@ -60,10 +64,19 @@ export default function SignUp() {
                     } else {
                       setErrorMessage("Something went wrong. Please try again");
                     }
+                  } finally {
+                    setLoading(false);
                   }
                 }}
               >
-                Sign Up
+                {loading ? (
+                  <>
+                    <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                    Logging In...
+                  </>
+                ) : (
+                  "Log In"
+                )}
               </button>
             </div>
             {errorMessage && <div className="text-red-500 mt-4 text-center font-medium">{errorMessage}</div>}

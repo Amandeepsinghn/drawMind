@@ -7,12 +7,14 @@ import { InputBox } from "../../../components/InputBox";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function LogIn() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="bg-[#0e0f11] h-screen w-full">
@@ -42,8 +44,10 @@ export default function LogIn() {
             <InputBox label="Password" placeholder="enter your password" onChange={(e) => setPassword(e.target.value)} />
             <div className="flex justify-center mt-6">
               <button
+                disabled={loading}
                 className={`text-black text-xl font-semibold rounded-2xl px-40 py-3 bg-[#dbe8f2] `}
                 onClick={async () => {
+                  setLoading(true);
                   try {
                     const response = await axios.post("https://draw-mind-http-server-6wjl.vercel.app/api/signin", {
                       password: password,
@@ -58,10 +62,19 @@ export default function LogIn() {
                     } else {
                       setErrorMessage("Something went wrong. Please try again.");
                     }
+                  } finally {
+                    setLoading(false);
                   }
                 }}
               >
-                log In
+                {loading ? (
+                  <>
+                    <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                    Logging In...
+                  </>
+                ) : (
+                  "Log In"
+                )}
               </button>
             </div>
             {errorMessage && <div className="text-red-500 mt-4 text-center font-medium">{errorMessage}</div>}
