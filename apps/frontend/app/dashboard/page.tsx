@@ -108,11 +108,14 @@ export default function LogIn() {
                       className={`text-white flex items-center justify-center text-sm font-semibold rounded-2xl px-2 py-2 hover:bg-[#187bdb] bg-[#0e0f11]`}
                       onClick={async () => {
                         try {
-                          const response = await axios.get<Room>(`http://localhost:3004/api/room/${user.roomName}`, {
-                            headers: {
-                              Authorization: localStorage.getItem("token"),
-                            },
-                          });
+                          const response = await axios.get<Room>(
+                            `draw-mind-http-server-6wjl.vercel.app/api/room/${user.roomName}`,
+                            {
+                              headers: {
+                                Authorization: localStorage.getItem("token"),
+                              },
+                            }
+                          );
                           router.push(`/room/${response.data.room.id}`);
                         } catch {
                           <div className="text-red-500"> failed to enter the room,error</div>;
