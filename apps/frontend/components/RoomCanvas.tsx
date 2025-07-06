@@ -6,7 +6,7 @@ export default function MainRoom({ roomId }: { roomId: string }) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8080?token=${localStorage.getItem("token")}`);
+    const ws = new WebSocket(`https://drawmindwebsocket-production.up.railway.app?token=${localStorage.getItem("token")}`);
 
     ws.onopen = () => {
       setSocket(ws);

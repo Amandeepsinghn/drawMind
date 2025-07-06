@@ -206,7 +206,7 @@ export async function Draw(
 
       try {
         axios.post(
-          "http://localhost:3004/api/deleteChat/",
+          "https://draw-mind-http-server-6wjl.vercel.app/api/deleteChat/",
           { roomId },
           {
             headers: {
@@ -273,7 +273,7 @@ function clearCanvas(existingShape: Shape[], canvas: HTMLCanvasElement, ctx: Can
 
 async function getExistingShape(roomId: string) {
   try {
-    const res = await axios.get(`http://localhost:3004/api/chat/${roomId}`, {
+    const res = await axios.get(`https://draw-mind-http-server-6wjl.vercel.app/api/chat/${roomId}`, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },

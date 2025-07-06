@@ -47,7 +47,7 @@ export default function SignUp() {
                 className={`text-black text-xl font-semibold rounded-2xl px-40 py-3 bg-[#dbe8f2] `}
                 onClick={async () => {
                   try {
-                    await axios.post("http://localhost:3004/api/signup", {
+                    await axios.post("https://draw-mind-http-server-6wjl.vercel.app/api/signup", {
                       username: email,
                       password: password,
                       name: firstName,

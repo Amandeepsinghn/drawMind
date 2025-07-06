@@ -41,7 +41,7 @@ export default function LogIn() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3004/api/room/bulk?filter=${filter}`, {
+      .get(`https://draw-mind-http-server-6wjl.vercel.app/api/room/bulk?filter=${filter}`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
