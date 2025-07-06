@@ -30,7 +30,7 @@ export default function Home() {
       <div className="m-20">
         <div className="text-white font-bold text-4xl flex justify-center">Collaborative drawing for teams</div>
         <div className="text-white py-5 flex justify-center">
-          Shapelt is a callaborative drawing tool that helps teams visualize and communciate their ideas. Create diagrams,
+          drawMind is a callaborative drawing tool that helps teams visualize and communciate their ideas. Create diagrams,
           flowcharts, wireframes, and more together in real-time.
         </div>
         <div className="flex justify-center space-x-3.5">

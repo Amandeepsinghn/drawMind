@@ -72,7 +72,7 @@ export default function SignUp() {
                 {loading ? (
                   <>
                     <AiOutlineLoading3Quarters className="animate-spin text-xl" />
-                    Signing...
+                    Signing Up...
                   </>
                 ) : (
                   "Log In"
