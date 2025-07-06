@@ -16,7 +16,7 @@ declare global {
 app.use(cors());
 app.use(express.json());
 
-// hello
+// hello dfs
 app.get("/", (req, res) => {
   res.json({
     message: "this is it my friend",
