@@ -56,7 +56,7 @@ export function InitCanvas({ roomId, socket }: { roomId: string; socket: WebSock
       window.removeEventListener("resize", resizeCanvas);
       if (cleanupFn) cleanupFn();
     };
-  }, [tool, roomId, socket]);
+  }, [tool]);
 
   return (
     <div className="relative h-screen w-screen">
